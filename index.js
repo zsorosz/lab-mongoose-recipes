@@ -28,6 +28,15 @@ mongoose
         });
       })
       .catch((err) => console.log("oh nooo, errrrrorr", err));
+    Recipe.findOneAndUpdate(
+      { title: "Rigatoni alla Genovese" },
+      { duration: 100 },
+      { new: true }
+    )
+      .then((updatedRecipe) =>
+        console.log("yeeyy, the recipe is updated", updatedRecipe)
+      )
+      .catch((err) => console.log("oh nooo, errrrrorr", err));
   })
   .catch((error) => {
     console.error("Error connecting to the database", error);

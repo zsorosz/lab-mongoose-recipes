@@ -20,6 +20,8 @@ mongoose
     // Run your code here, after you have insured that the connection was made
     async function createRecipes() {
       try {
+        // const oneRecipe = await Recipe.create(data[0]);
+        // console.log("Recipe created", oneRecipe);
         const allRecipes = await Recipe.insertMany(data);
         allRecipes.forEach((recipe) => {
           console.log(recipe.title);

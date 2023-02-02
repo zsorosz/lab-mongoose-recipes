@@ -12,31 +12,34 @@ const MONGODB_URI = "mongodb://127.0.0.1/recipe-app";
 mongoose
   .connect(MONGODB_URI)
   .then((x) => {
-    // console.log(recipesArr);
     console.log(`Connected to the database: "${x.connection.name}"`);
     // Before adding any recipes to the database, let's remove all existing ones
     return Recipe.deleteMany();
   })
   .then(() => {
-    // Recipe.create(data[0])
-    //   .then((newRecipe) => console.log(newRecipe.title))
-    //   .catch((err) => console.log("oh nooo, errrrrorr", err));
-    Recipe.insertMany(data)
-      .then((allRecipes) => {
+    // Run your code here, after you have insured that the connection was made
+    async function createRecipes() {
+      try {
+        const allRecipes = await Recipe.insertMany(data);
         allRecipes.forEach((recipe) => {
           console.log(recipe.title);
         });
-      })
-      .catch((err) => console.log("oh nooo, errrrrorr", err));
-    Recipe.findOneAndUpdate(
-      { title: "Rigatoni alla Genovese" },
-      { duration: 100 },
-      { new: true }
-    )
-      .then((updatedRecipe) =>
-        console.log("yeeyy, the recipe is updated", updatedRecipe)
-      )
-      .catch((err) => console.log("oh nooo, errrrrorr", err));
+        const updatedRecipe = await Recipe.findOneAndUpdate(
+          { title: "Rigatoni alla Genovese" },
+          { duration: 100 },
+          { new: true }
+        );
+        console.log("yeeyy, the recipe is updated", updatedRecipe);
+        const deletedRecipe = await Recipe.findOneAndDelete({
+          title: "Carrot Cake",
+        });
+        console.log("great, carrot cake is gone...", deletedRecipe);
+        mongoose.disconnect();
+      } catch (err) {
+        console.log("oh nooo, errrrrorr", err);
+      }
+    }
+    createRecipes();
   })
   .catch((error) => {
     console.error("Error connecting to the database", error);
